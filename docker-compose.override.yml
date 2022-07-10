@@ -1,0 +1,5 @@
+# WARNING: Unless you use Mac M1 tip, do NOT use this file.
+services:
+  db:
+    # platform: linux/amd64
+    image: arm64v8/mysql:8.0-oracle
