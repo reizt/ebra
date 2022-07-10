@@ -1,7 +1,7 @@
 package config
 
 import (
-	"echo-basic-rest-api/models"
+	"ebra/models"
 	"os"
 
 	"github.com/joho/godotenv"

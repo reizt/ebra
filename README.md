@@ -13,8 +13,8 @@ Docker Compose version 2.6.0
 ## Installation
 ---
 ```sh
-$ git clone https://github.com/reizt/echo-basic-rest-api.git
-$ cd echo-basic-rest-api
+$ git clone https://github.com/reizt/ebra.git
+$ cd ebra
 ```
 ## Usage
 ---

@@ -2,8 +2,8 @@ package main
 
 import (
 	"net/http"
-	"echo-basic-rest-api/config"
-	"echo-basic-rest-api/controllers"
+	"ebra/config"
+	"ebra/controllers"
 
 	"github.com/labstack/echo/v4"
 )

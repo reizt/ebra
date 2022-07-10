@@ -1,5 +1,5 @@
 version: "3.7"
-name: echo-basic-rest-api
+name: ebra
 volumes:
   mysql_data:
 services:
