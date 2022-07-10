@@ -11,21 +11,20 @@ import (
 var db = config.ConnectMySQL()
 
 func GetAllUsers(c echo.Context) error {
-	var users []models.User
+	users := new([]models.User)
 	db.Limit(50).Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 func GetUserById(c echo.Context) error {
 	user := new(models.User)
 	id := c.Param("id")
-	db.Limit(1).Find(&user, "id = ?", id)
-	if user != new(models.User) {
-		return c.JSON(http.StatusOK, user)
-	} else {
+	getRes := db.First(&user, "id = ?", id)
+	if getRes.Error != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{
 			"message": "User not found",
 		})
 	}
+	return c.JSON(http.StatusOK, user)
 }
 func CreateUser(c echo.Context) error {
 	user := new(models.User)
@@ -33,17 +32,18 @@ func CreateUser(c echo.Context) error {
 		return err
 	}
 
-	result := db.Select("ID", "Name").Create(&user)
-	if result.Error != nil {
-		return result.Error
+	createRes := db.Select("ID", "Name").Create(&user)
+	if createRes.Error != nil {
+		return createRes.Error
 	}
 	return c.JSON(http.StatusCreated, user)
 }
 func UpdateUser(c echo.Context) error {
 	user := new(models.User)
-	result := db.First(&user, "id = ?", c.Param("id"))
+	id := c.Param("id")
+	findRes := db.First(&user, "id = ?", id)
 
-	if result.Error != nil {
+	if findRes.Error != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{
 			"message": "User not found",
 		})
@@ -53,11 +53,26 @@ func UpdateUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	res := db.Model(&user).Updates(models.User{
+	updateRes := db.Model(&user).Updates(models.User{
 		Name: user.Name,
 	})
-	if res.Error != nil {
-		return res.Error
+	if updateRes.Error != nil {
+		return updateRes.Error
 	}
-	return c.JSON(http.StatusAccepted, user)
+	return c.NoContent(http.StatusOK)
+}
+func DeleteUser(c echo.Context) error {
+	user := new(models.User)
+	findRes := db.First(&user, "id = ?", c.Param("id"))
+
+	if findRes.Error != nil {
+		return c.JSON(http.StatusNotFound, map[string]string{
+			"message": "User not found",
+		})
+	}
+	deleteRes := db.Delete(&user)
+	if deleteRes.Error != nil {
+		return deleteRes.Error
+	}
+	return c.NoContent(http.StatusOK)
 }

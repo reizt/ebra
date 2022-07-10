@@ -19,6 +19,7 @@ func main() {
 	e.POST("/users", controllers.CreateUser)
 	e.GET("/users/:id", controllers.GetUserById)
 	e.PATCH("/users/:id", controllers.UpdateUser)
+	e.DELETE("/users/:id", controllers.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
