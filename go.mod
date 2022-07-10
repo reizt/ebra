@@ -1,4 +1,4 @@
-module echo-basic-rest-api
+module ebra
 
 go 1.18
 
