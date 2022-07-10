@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"net/http"
-	"werp/api/config"
-	"werp/api/models"
+	"echo-basic-rest-api/config"
+	"echo-basic-rest-api/models"
 
 	"github.com/labstack/echo/v4"
 )

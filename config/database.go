@@ -1,8 +1,8 @@
 package config
 
 import (
+	"echo-basic-rest-api/models"
 	"os"
-	"werp/api/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"

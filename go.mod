@@ -1,4 +1,4 @@
-module werp/api
+module echo-basic-rest-api
 
 go 1.18
 
