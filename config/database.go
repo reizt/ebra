@@ -1,18 +1,24 @@
 package config
 
 import (
+	"os"
 	"werp/api/models"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func ConnectMySQL() *gorm.DB {
 	// See https://github.com/go-sql-driver/mysql#dsn-data-source-name
-	USER := "werp_beta_mysql_user"
-	PASS := "root"
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
+	}
+	USER := os.Getenv("MYSQL_USER")
+	PASS := os.Getenv("MYSQL_PASSWORD")
 	PROTOCOL := "tcp(db:3306)"
-	DATABASE := "werp_beta_general"
+	DATABASE := os.Getenv("MYSQL_DATABASE")
 	dsn := USER + ":" + PASS + "@" + PROTOCOL + "/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN: dsn,
