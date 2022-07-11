@@ -11,7 +11,7 @@ import (
 
 func ConnectMySQL() *gorm.DB {
 	// See https://github.com/go-sql-driver/mysql#dsn-data-source-name
-	err := godotenv.Load("/app/.env")
+	err := godotenv.Load(os.Getenv("WORKDIR") + "/.env")
 	if err != nil {
 		panic(err)
 	}

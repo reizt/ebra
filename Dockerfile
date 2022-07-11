@@ -3,8 +3,8 @@ FROM golang:1.18
 
 ENV TZ /usr/share/zoneinfo/Asia/Tokyo
 
-ENV ROOT=/app
-WORKDIR ${ROOT}
+ENV WORKDIR=/app
+WORKDIR ${WORKDIR}
 
 ENV GO111MODULE=on
 
