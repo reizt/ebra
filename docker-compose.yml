@@ -1,28 +1,30 @@
 version: "3.7"
 name: ebra
 volumes:
-  mysql_data:
+  db_volume:
 services:
   db:
     image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_volume:/var/lib/mysql
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
   app:
+    depends_on:
+      - db
     build: .
     volumes:
       - .:/app
-    environment:
-      EBRA_ENV: development # Default is development
-    command: air -c .air.toml
-    depends_on:
-      - db
     ports:
       - 3000:3000
+    env_file: .env
+    environment:
+      APP_ENV: development
+    command: air -c .air.toml

@@ -12,8 +12,8 @@ import (
 var Db = ConnectMySQL()
 
 func loadEnv() {
-	workdir, env := os.Getenv("WORKDIR"), os.Getenv("EBRA_ENV")
-	err := godotenv.Load(workdir + "/.env." + env + ".local")
+	workdir := os.Getenv("WORKDIR")
+	err := godotenv.Load(workdir + "/.env")
 	if err != nil {
 		panic(err)
 	}
@@ -22,11 +22,30 @@ func loadEnv() {
 func ConnectMySQL() *gorm.DB {
 	loadEnv()
 	// See https://github.com/go-sql-driver/mysql
-	USER := os.Getenv("MYSQL_USER")
-	PASS := os.Getenv("MYSQL_PASSWORD")
-	PROTOCOL := "tcp(db:3306)"
-	DATABASE := os.Getenv("MYSQL_DATABASE")
-	dsn := USER + ":" + PASS + "@" + PROTOCOL + "/" + DATABASE + "?charset=utf8mb4&parseTime=True&loc=Local"
+	type DsnConfig struct {
+		Protocol string
+		User     string
+		Password string
+		Database string
+	}
+	cnf := &DsnConfig{}
+	switch os.Getenv("APP_ENV") {
+	case "development":
+		cnf = &DsnConfig{
+			Protocol: "tcp(db:3306)",
+			User:     os.Getenv("MYSQL_USER"),
+			Password: os.Getenv("MYSQL_PASSWORD"),
+			Database: os.Getenv("MYSQL_DATABASE"),
+		}
+	case "test":
+		cnf = &DsnConfig{
+			Protocol: "tcp(db:3306)",
+			User:     "mysql_test_user",
+			Password: "password",
+			Database: "mysql_test_db",
+		}
+	}
+	dsn := cnf.User + ":" + cnf.Password + "@" + cnf.Protocol + "/" + cnf.Database + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN: dsn,
 	}), &gorm.Config{})

@@ -28,6 +28,7 @@ func initTestContext(method string, path string, body io.Reader) (ctx echo.Conte
 
 func TestMain(m *testing.M) {
 	config.Db = config.Db.Begin()
+	config.Db.AutoMigrate(&models.User{})
 	m.Run()
 	config.Db.Rollback()
 }
