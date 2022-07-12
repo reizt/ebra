@@ -9,12 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectMySQL() *gorm.DB {
-	// See https://github.com/go-sql-driver/mysql#dsn-data-source-name
-	err := godotenv.Load(os.Getenv("WORKDIR") + "/.env")
+var Db = ConnectMySQL()
+
+func loadEnv() {
+	workdir, env := os.Getenv("WORKDIR"), os.Getenv("EBRA_ENV")
+	err := godotenv.Load(workdir + "/.env." + env + ".local")
 	if err != nil {
 		panic(err)
 	}
+}
+
+func ConnectMySQL() *gorm.DB {
+	loadEnv()
+	// See https://github.com/go-sql-driver/mysql
 	USER := os.Getenv("MYSQL_USER")
 	PASS := os.Getenv("MYSQL_PASSWORD")
 	PROTOCOL := "tcp(db:3306)"

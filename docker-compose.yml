@@ -19,6 +19,8 @@ services:
     build: .
     volumes:
       - .:/app
+    environment:
+      EBRA_ENV: development # Default is development
     command: air -c .air.toml
     depends_on:
       - db
