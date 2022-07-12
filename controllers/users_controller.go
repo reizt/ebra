@@ -8,44 +8,49 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var db = config.ConnectMySQL()
-
 func GetAllUsers(c echo.Context) error {
-	users := new([]models.User)
-	db.Limit(50).Find(&users)
+	db := *config.Db
+	users := []models.User{} // Response will be null when initialize var users by new(), expects []
+	db.Order("created_at desc").Limit(50).Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 func GetUserById(c echo.Context) error {
+	db := *config.Db
 	user := new(models.User)
 	id := c.Param("id")
-	getRes := db.First(&user, "id = ?", id)
-	if getRes.Error != nil {
+	if err := db.First(&user, "id = ?", id).Error; err != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{
-			"message": "User not found",
+			"message": "user not found",
 		})
 	}
 	return c.JSON(http.StatusOK, user)
 }
 func CreateUser(c echo.Context) error {
-	user := new(models.User)
-	if err := c.Bind(&user); err != nil {
+	db := *config.Db
+	user := &models.User{}
+	if err := (&echo.DefaultBinder{}).BindBody(c, &user); err != nil {
 		return err
 	}
-
-	createRes := db.Select("ID", "Name").Create(&user)
-	if createRes.Error != nil {
-		return createRes.Error
+	// Validation for now
+	if user.Name == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "name can't be blank",
+		})
+	}
+	if err := db.Select("ID", "Name").Create(&user).Error; err != nil {
+		return err
 	}
 	return c.JSON(http.StatusCreated, user)
 }
-func UpdateUser(c echo.Context) error {
+func UpdateUserById(c echo.Context) error {
+	db := *config.Db
 	user := new(models.User)
 	id := c.Param("id")
 	findRes := db.First(&user, "id = ?", id)
 
 	if findRes.Error != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{
-			"message": "User not found",
+			"message": "user not found",
 		})
 	}
 
@@ -59,20 +64,21 @@ func UpdateUser(c echo.Context) error {
 	if updateRes.Error != nil {
 		return updateRes.Error
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }
-func DeleteUser(c echo.Context) error {
+func DeleteUserById(c echo.Context) error {
+	db := *config.Db
 	user := new(models.User)
 	findRes := db.First(&user, "id = ?", c.Param("id"))
 
 	if findRes.Error != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{
-			"message": "User not found",
+			"message": "user not found",
 		})
 	}
 	deleteRes := db.Delete(&user)
 	if deleteRes.Error != nil {
 		return deleteRes.Error
 	}
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }

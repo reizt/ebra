@@ -18,8 +18,8 @@ func main() {
 	e.GET("/users", controllers.GetAllUsers)
 	e.POST("/users", controllers.CreateUser)
 	e.GET("/users/:id", controllers.GetUserById)
-	e.PATCH("/users/:id", controllers.UpdateUser)
-	e.DELETE("/users/:id", controllers.DeleteUser)
+	e.PATCH("/users/:id", controllers.UpdateUserById)
+	e.DELETE("/users/:id", controllers.DeleteUserById)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
