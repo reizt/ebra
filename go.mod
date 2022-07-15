@@ -1,4 +1,4 @@
-module ebra
+module github.com/reizt/ebra
 
 go 1.18
 

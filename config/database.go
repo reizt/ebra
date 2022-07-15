@@ -1,15 +1,14 @@
 package config
 
 import (
-	"ebra/models"
 	"os"
+
+	"github.com/reizt/ebra/models"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
-
-var Db = ConnectMySQL()
 
 func loadEnv() {
 	workdir := os.Getenv("WORKDIR")

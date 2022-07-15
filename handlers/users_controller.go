@@ -1,21 +1,22 @@
-package controllers
+package handlers
 
 import (
-	"ebra/config"
-	"ebra/models"
 	"net/http"
+
+	"github.com/reizt/ebra/models"
+	"gorm.io/gorm"
 
 	"github.com/labstack/echo/v4"
 )
 
 func GetAllUsers(c echo.Context) error {
-	db := *config.Db
+	db := c.Get("db").(*gorm.DB)
 	users := []models.User{} // Response will be null when initialize var users by new(), expects []
 	db.Order("created_at desc").Limit(50).Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 func GetUserById(c echo.Context) error {
-	db := *config.Db
+	db := c.Get("db").(*gorm.DB)
 	user := new(models.User)
 	id := c.Param("id")
 	if err := db.First(&user, "id = ?", id).Error; err != nil {
@@ -26,7 +27,7 @@ func GetUserById(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 func CreateUser(c echo.Context) error {
-	db := *config.Db
+	db := c.Get("db").(*gorm.DB)
 	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &user); err != nil {
 		return err
@@ -43,7 +44,7 @@ func CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, user)
 }
 func UpdateUserById(c echo.Context) error {
-	db := *config.Db
+	db := c.Get("db").(*gorm.DB)
 	user := new(models.User)
 	id := c.Param("id")
 	findRes := db.First(&user, "id = ?", id)
@@ -67,7 +68,7 @@ func UpdateUserById(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 func DeleteUserById(c echo.Context) error {
-	db := *config.Db
+	db := c.Get("db").(*gorm.DB)
 	user := new(models.User)
 	findRes := db.First(&user, "id = ?", c.Param("id"))
 

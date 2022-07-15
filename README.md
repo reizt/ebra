@@ -26,7 +26,7 @@ $ docker-compose up
 ```
 config/
   database.go # Functions to connect DB & migrate DB
-controllers/
+handlers/
   users_controller.go # CRUD Handlers of user data operation
 models/
   user.go # Defines gorm's struct and hooks
