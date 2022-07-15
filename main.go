@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/reizt/ebra/config"
-	"github.com/reizt/ebra/handlers"
+	"github.com/reizt/ebra/handlers/users"
 
 	"github.com/labstack/echo/v4"
 )
@@ -23,11 +23,11 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
-	e.GET("/users", handlers.GetAllUsers)
-	e.POST("/users", handlers.CreateUser)
-	e.GET("/users/:id", handlers.GetUserById)
-	e.PATCH("/users/:id", handlers.UpdateUserById)
-	e.DELETE("/users/:id", handlers.DeleteUserById)
+	e.GET("/users", users.GetUsers)
+	e.POST("/users", users.CreateUser)
+	e.GET("/users/:id", users.GetUserById)
+	e.PATCH("/users/:id", users.UpdateUser)
+	e.DELETE("/users/:id", users.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
