@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/reizt/ebra/handlers"
+
 	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/handlers/users"
 
@@ -10,6 +12,7 @@ import (
 )
 
 func main() {
+	conf.LoadEnv()
 	e := echo.New()
 	conf.Migrate()
 	db := conf.ConnectMySQL()
@@ -28,6 +31,8 @@ func main() {
 	e.GET("/users/:id", users.GetUserById)
 	e.PATCH("/users/:id", users.UpdateUser)
 	e.DELETE("/users/:id", users.DeleteUser)
+	g := e.Group("/test")
+	g.POST("/mail", handlers.SendTestMail)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }
