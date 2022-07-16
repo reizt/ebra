@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
 
@@ -15,7 +15,7 @@ import (
 
 func TestGetUsersWhenUsersExist(t *testing.T) {
 	// Given: Some users are registered
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	users := []models.User{
 		{Name: "John Smith"},
@@ -40,7 +40,7 @@ func TestGetUsersWhenUsersExist(t *testing.T) {
 
 	// When: GET /users
 	ctx, _, rec := InitTestContext(http.MethodGet, "/users", nil)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get JSON array having some user objects
 	if assert.NoError(t, handlers.GetUsers(ctx)) {
@@ -55,11 +55,11 @@ func TestGetUsersWhenUsersExist(t *testing.T) {
 
 func TestGetUsersWhenUsersDontExist(t *testing.T) {
 	// Given: No users are registered
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	// When: GET /users
 	ctx, _, rec := InitTestContext(http.MethodGet, "/users", nil)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get JSON array having some user objects
 	if assert.NoError(t, handlers.GetUsers(ctx)) {

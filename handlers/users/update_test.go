@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
 
@@ -14,7 +14,7 @@ import (
 
 func TestUpdateUser(t *testing.T) {
 	// Given: a user is registered
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	user := &models.User{
 		Name: "Robert Griesemer",
@@ -29,7 +29,7 @@ func TestUpdateUser(t *testing.T) {
 	ctx, _, rec := InitTestContext(http.MethodPatch, "/users/:id", strings.NewReader(userJSON))
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(user.ID)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get status 200 and name changed
 	if assert.NoError(t, handlers.UpdateUser(ctx)) {
@@ -45,7 +45,7 @@ func TestUpdateUserWhenBodyIsBlank(t *testing.T) {
 	user := &models.User{
 		Name: "Robert Griesemer",
 	}
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	res := tx.Create(&user)
 	if res.Error != nil {
@@ -57,7 +57,7 @@ func TestUpdateUserWhenBodyIsBlank(t *testing.T) {
 	ctx, _, rec := InitTestContext(http.MethodPatch, "/users/:id", strings.NewReader(userJSON))
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(user.ID)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get status 200 and name changed
 	if assert.NoError(t, handlers.UpdateUser(ctx)) {

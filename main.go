@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/handlers/users"
 
 	"github.com/labstack/echo/v4"
@@ -11,11 +11,11 @@ import (
 
 func main() {
 	e := echo.New()
-	config.Migrate()
-	db := config.ConnectMySQL()
+	conf.Migrate()
+	db := conf.ConnectMySQL()
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			c.Set(config.DbContextKey, db)
+			c.Set(conf.DbContextKey, db)
 			return next(c)
 		}
 	})

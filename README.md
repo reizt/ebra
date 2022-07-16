@@ -24,7 +24,7 @@ $ docker-compose up
 - Air: Enables hot reloading
 ## File Structure
 ```
-config/
+conf/
   database.go # Functions to connect DB & migrate DB
 handlers/
   users_controller.go # CRUD Handlers of user data operation

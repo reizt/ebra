@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
 
@@ -15,13 +15,13 @@ import (
 
 func TestCreateUserWhenNameGiven(t *testing.T) {
 	// Given: no users are registered
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	userJSON := `{"name": "John Smith"}`
 
 	// When: POST /users with body including property `name`
 	ctx, _, rec := InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Successfully user is created
 	if assert.NoError(t, handlers.CreateUser(ctx)) {
@@ -37,11 +37,11 @@ func TestCreateUserWhenNameGiven(t *testing.T) {
 func TestCreateUserWhenNameNotGiven(t *testing.T) {
 	// When: POST /users without property `name`
 	userJSON := `{}`
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 
 	ctx, _, rec := InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Can't create user
 	if assert.NoError(t, handlers.CreateUser(ctx)) {
@@ -50,11 +50,11 @@ func TestCreateUserWhenNameNotGiven(t *testing.T) {
 	tx.Rollback()
 }
 func TestCreateUserWhenBodyIsBlank(t *testing.T) {
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	// When: POST /users without body
 	ctx, _, rec := InitTestContext(http.MethodPost, "/users", nil)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 	// Given: Can't create user
 	if assert.NoError(t, handlers.CreateUser(ctx)) {
 		assert.Equal(t, rec.Code, http.StatusBadRequest)

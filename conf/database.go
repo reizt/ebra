@@ -1,4 +1,4 @@
-package config
+package conf
 
 import (
 	"os"
@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func loadEnv() {
+func LoadEnv() {
 	workdir := os.Getenv("WORKDIR")
 	err := godotenv.Load(workdir + "/.env")
 	if err != nil {
@@ -19,7 +19,7 @@ func loadEnv() {
 }
 
 func ConnectMySQL() *gorm.DB {
-	loadEnv()
+	LoadEnv()
 	// See https://github.com/go-sql-driver/mysql
 	type DsnConfig struct {
 		Protocol string

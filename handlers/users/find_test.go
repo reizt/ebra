@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
 
@@ -16,7 +16,7 @@ import (
 
 func TestGetUser(t *testing.T) {
 	// Given: Some users are registered
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	users := []models.User{
 		{Name: "John Smith"},
@@ -39,7 +39,7 @@ func TestGetUser(t *testing.T) {
 	ctx, _, rec := InitTestContext(http.MethodGet, "/users/:id", nil)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(users[0].ID)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get JSON array having some user objects
 	if assert.NoError(t, handlers.GetUserById(ctx)) {

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/models"
 
 	"github.com/labstack/echo/v4"
@@ -22,7 +22,7 @@ func InitTestContext(method string, path string, body io.Reader) (ctx echo.Conte
 }
 
 func TestMain(m *testing.M) {
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	db.AutoMigrate(&models.User{})
 	m.Run()
 }
