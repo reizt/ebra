@@ -15,12 +15,11 @@ import (
 func CreateUser(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
 	params := &bindings.CreateUserRequest{}
+	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
 	}
-	user := &models.User{
-		Name: params.Name,
-	}
+	user.Name = params.Name
 	// Validation for now
 	if user.Name == "" {
 		return c.JSON(http.StatusBadRequest, renderings.NotFoundResponse{

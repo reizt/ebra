@@ -14,7 +14,7 @@ import (
 
 func UpdateUser(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
-	user := new(models.User)
+	user := &models.User{}
 	id := c.Param("id")
 	findRes := db.First(&user, "id = ?", id)
 
@@ -28,7 +28,7 @@ func UpdateUser(c echo.Context) error {
 		return err
 	}
 	updateRes := db.Model(&user).Updates(models.User{
-		Name: user.Name,
+		Name: params.Name,
 	})
 	if updateRes.Error != nil {
 		return updateRes.Error
