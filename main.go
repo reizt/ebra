@@ -9,6 +9,7 @@ import (
 	"github.com/reizt/ebra/handlers/users"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -16,6 +17,11 @@ func main() {
 	e := echo.New()
 	conf.Migrate()
 	db := conf.ConnectMySQL()
+	e.Use(middleware.LoggerWithConfig(
+		middleware.LoggerConfig{
+			Format: "\x1b[32m${method}\x1b[0m \x1b[32m${status}\x1b[0m \x1b[32m${uri}\x1b[0m\n",
+		},
+	))
 	e.Static("/", "public")
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
