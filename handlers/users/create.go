@@ -3,9 +3,10 @@ package users
 import (
 	"net/http"
 
+	"github.com/reizt/ebra/bindings"
+	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
 
-	"github.com/reizt/ebra/models"
 	"gorm.io/gorm"
 
 	"github.com/labstack/echo/v4"
@@ -13,9 +14,12 @@ import (
 
 func CreateUser(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
-	user := &models.User{}
-	if err := (&echo.DefaultBinder{}).BindBody(c, &user); err != nil {
+	params := &bindings.CreateUserRequest{}
+	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
+	}
+	user := &models.User{
+		Name: params.Name,
 	}
 	// Validation for now
 	if user.Name == "" {

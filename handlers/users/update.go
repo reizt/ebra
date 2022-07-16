@@ -3,6 +3,8 @@ package users
 import (
 	"net/http"
 
+	"github.com/reizt/ebra/bindings"
+
 	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
 	"gorm.io/gorm"
@@ -21,9 +23,8 @@ func UpdateUser(c echo.Context) error {
 			Message: "user not found",
 		})
 	}
-
-	err := c.Bind(&user)
-	if err != nil {
+	params := &bindings.UpdateUserRequest{}
+	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
 	}
 	updateRes := db.Model(&user).Updates(models.User{
