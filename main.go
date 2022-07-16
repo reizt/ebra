@@ -16,6 +16,7 @@ func main() {
 	e := echo.New()
 	conf.Migrate()
 	db := conf.ConnectMySQL()
+	e.Static("/", "public")
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Set(conf.DbContextKey, db)
