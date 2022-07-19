@@ -21,6 +21,7 @@ var (
 func Register(c echo.Context) error {
 	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	params := &bindings.CreateUserRequest{}
+	resp := &renderings.RegisterResponse{}
 	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
@@ -41,5 +42,8 @@ func Register(c echo.Context) error {
 	if err := db.Select("ID", "Name", "Email", "PasswordDigest").Create(&user).Error; err != nil {
 		return err
 	}
-	return c.JSON(http.StatusCreated, user)
+	resp.ID = user.ID
+	resp.Name = user.Name
+	resp.Email = user.Email
+	return c.JSON(http.StatusCreated, resp)
 }
