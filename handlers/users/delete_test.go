@@ -7,6 +7,7 @@ import (
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/helpers"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -24,7 +25,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 
 	// When: PATCH /users/:id with name
-	ctx, _, rec := InitTestContext(http.MethodDelete, "/users/:id", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodDelete, "/users/:id", nil)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(user.ID)
 	ctx.Set(conf.DbContextKey, tx)

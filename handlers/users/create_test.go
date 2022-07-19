@@ -9,6 +9,7 @@ import (
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/helpers"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +21,7 @@ func TestCreateUserWhenNameGiven(t *testing.T) {
 	userJSON := `{"name": "John Smith"}`
 
 	// When: POST /users with body including property `name`
-	ctx, _, rec := InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
+	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
 	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Successfully user is created
@@ -40,7 +41,7 @@ func TestCreateUserWhenNameNotGiven(t *testing.T) {
 	db := conf.ConnectMySQL()
 	tx := db.Begin()
 
-	ctx, _, rec := InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
+	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
 	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Can't create user
@@ -53,7 +54,7 @@ func TestCreateUserWhenBodyIsBlank(t *testing.T) {
 	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	// When: POST /users without body
-	ctx, _, rec := InitTestContext(http.MethodPost, "/users", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/users", nil)
 	ctx.Set(conf.DbContextKey, tx)
 	// Given: Can't create user
 	if assert.NoError(t, handlers.CreateUser(ctx)) {

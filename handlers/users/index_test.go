@@ -9,6 +9,7 @@ import (
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/helpers"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -39,7 +40,7 @@ func TestGetUsersWhenUsersExist(t *testing.T) {
 	}
 
 	// When: GET /users
-	ctx, _, rec := InitTestContext(http.MethodGet, "/users", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodGet, "/users", nil)
 	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get JSON array having some user objects
@@ -58,7 +59,7 @@ func TestGetUsersWhenUsersDontExist(t *testing.T) {
 	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	// When: GET /users
-	ctx, _, rec := InitTestContext(http.MethodGet, "/users", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodGet, "/users", nil)
 	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get JSON array having some user objects

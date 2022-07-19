@@ -8,6 +8,7 @@ import (
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/helpers"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +27,7 @@ func TestUpdateUser(t *testing.T) {
 
 	// When: PATCH /users/:id with name
 	userJSON := `{"name": "Ken Thompson"}`
-	ctx, _, rec := InitTestContext(http.MethodPatch, "/users/:id", strings.NewReader(userJSON))
+	ctx, _, rec := helpers.InitTestContext(http.MethodPatch, "/users/:id", strings.NewReader(userJSON))
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(user.ID)
 	ctx.Set(conf.DbContextKey, tx)
@@ -54,7 +55,7 @@ func TestUpdateUserWhenBodyIsBlank(t *testing.T) {
 
 	// When: PATCH /users/:id with name
 	userJSON := ``
-	ctx, _, rec := InitTestContext(http.MethodPatch, "/users/:id", strings.NewReader(userJSON))
+	ctx, _, rec := helpers.InitTestContext(http.MethodPatch, "/users/:id", strings.NewReader(userJSON))
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(user.ID)
 	ctx.Set(conf.DbContextKey, tx)

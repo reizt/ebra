@@ -10,6 +10,7 @@ import (
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
 	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/helpers"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -36,7 +37,7 @@ func TestGetUser(t *testing.T) {
 	}
 
 	// When: GET /users/:id
-	ctx, _, rec := InitTestContext(http.MethodGet, "/users/:id", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodGet, "/users/:id", nil)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(users[0].ID)
 	ctx.Set(conf.DbContextKey, tx)
