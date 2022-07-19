@@ -8,12 +8,13 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/reizt/ebra/bindings"
+	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/middlewares"
 	"github.com/reizt/ebra/models"
 )
 
 func Signin(c echo.Context) error {
-	db := c.Get("db").(*gorm.DB)
+	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	params := &bindings.SigninParams{}
 	currentUser := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {

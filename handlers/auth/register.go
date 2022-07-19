@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/reizt/ebra/bindings"
+	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
 
@@ -18,7 +19,7 @@ var (
 )
 
 func Register(c echo.Context) error {
-	db := c.Get("db").(*gorm.DB)
+	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	params := &bindings.CreateUserRequest{}
 	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {

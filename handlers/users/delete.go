@@ -3,6 +3,7 @@ package users
 import (
 	"net/http"
 
+	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
 	"gorm.io/gorm"
@@ -11,7 +12,7 @@ import (
 )
 
 func DeleteUser(c echo.Context) error {
-	db := c.Get("db").(*gorm.DB)
+	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	user := new(models.User)
 	findRes := db.First(&user, "id = ?", c.Param("id"))
 
