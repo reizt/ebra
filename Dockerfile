@@ -19,6 +19,8 @@ RUN go get \
   github.com/joho/godotenv \
   github.com/labstack/echo/v4 \
   github.com/stretchr/testify \
+  golang.org/x/crypto \
   gorm.io/driver/mysql \
+  gorm.io/driver/sqlite \
   gorm.io/gorm
 RUN go install github.com/cosmtrek/air@latest
