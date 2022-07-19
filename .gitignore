@@ -4,4 +4,4 @@
 
 /designs
 /jwt.key
-/sessions.db
+/sessions.*.db

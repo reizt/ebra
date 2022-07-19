@@ -63,7 +63,7 @@ func ConnectMySQL() *gorm.DB {
 	return db
 }
 func ConnectSessionDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("sessions.db"))
+	db, err := gorm.Open(sqlite.Open("sessions." + os.Getenv("APP_ENV") + ".db"))
 	if err != nil {
 		panic(err)
 	}
