@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	expMinites = 60 * 24 * 3 // 3 days
+	// 3 days
+	jwtDuration = time.Hour * 24 * 3
 )
 
 type sessionJwtClaims struct {
@@ -42,7 +43,7 @@ func GenerateJwt(sessionId string) (string, error) {
 		SessionID: sessionId,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute * expMinites).Unix(),
+			ExpiresAt: time.Now().Add(jwtDuration).Unix(),
 			Issuer:    "ebra",
 		},
 	}
