@@ -7,7 +7,9 @@ import (
 
 type User struct {
 	Base
-	Name string `json:"name"`
+	Name           string `json:"name"`
+	Email          string `json:"email"`
+	PasswordDigest string
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

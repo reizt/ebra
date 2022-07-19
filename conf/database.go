@@ -9,6 +9,7 @@ import (
 	"github.com/reizt/ebra/models"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -61,7 +62,16 @@ func ConnectMySQL() *gorm.DB {
 	}
 	return db
 }
+func ConnectSessionDB() *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("sessions.db"))
+	if err != nil {
+		panic(err)
+	}
+	return db
+}
 func Migrate() {
 	db := ConnectMySQL()
 	db.AutoMigrate(&models.User{})
+	db = ConnectSessionDB()
+	db.AutoMigrate(&models.Session{})
 }
