@@ -13,8 +13,8 @@ import (
 
 func main() {
 	conf.LoadEnv()
-	e := echo.New()
 	conf.Migrate()
+	e := echo.New()
 
 	e.Use(middleware.LoggerWithConfig(
 		middleware.LoggerConfig{
@@ -22,11 +22,12 @@ func main() {
 		},
 	))
 	e.Use(middleware.Recover())
-	e.Use(middlewares.SetContexts)
-	e.Use(middlewares.SigninFilter)
+	e.Use(middlewares.SetContexts())
+	e.Use(middlewares.SigninFilter())
 
 	e.GET("/", handlers.Root)
 	e.Static("/", "public")
+
 	g := e.Group("/auth")
 	g.POST("/signin", auth.Signin)
 	g.DELETE("/signout", auth.Signout)
