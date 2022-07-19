@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/handlers"
 	"github.com/reizt/ebra/handlers/auth"
@@ -27,9 +25,7 @@ func main() {
 	e.Use(middlewares.SetContexts)
 	e.Use(middlewares.SigninFilter)
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
+	e.GET("/", handlers.Root)
 	e.Static("/", "public")
 	g := e.Group("/auth")
 	g.POST("/signin", auth.Signin)
