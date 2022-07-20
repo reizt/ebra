@@ -13,11 +13,11 @@ func TestJwt(t *testing.T) {
 	sessionId := uuid.New().String()
 	tokenString, err := middlewares.GenerateJwt(sessionId)
 	if err != nil {
-		t.Errorf("got error: %v", err)
+		t.Fatalf("got error: %v", err)
 	}
 	claims, err := middlewares.ValidateJwt(tokenString)
 	if err != nil {
-		t.Errorf("got error: %v", err)
+		t.Fatalf("got error: %v", err)
 	}
 	assert.Equal(t, sessionId, claims["sessionId"])
 }
