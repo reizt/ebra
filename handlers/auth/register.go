@@ -16,7 +16,7 @@ import (
 func Register(c echo.Context) error {
 	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	params := &bindings.CreateUserRequest{}
-	resp := &renderings.RegisterResponse{}
+	resp := &renderings.UserResponse{}
 	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
@@ -29,7 +29,7 @@ func Register(c echo.Context) error {
 	}
 	user.Name = params.Name
 	user.Email = params.Email
-	if err := db.Select("ID", "Name", "Email", "PasswordDigest").Create(&user).Error; err != nil {
+	if err := db.Create(&user).Error; err != nil {
 		return err
 	}
 	resp.ID = user.ID
