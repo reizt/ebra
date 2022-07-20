@@ -7,16 +7,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/reizt/ebra/config"
+	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
+	"github.com/reizt/ebra/helpers"
 	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/renderings"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetUser(t *testing.T) {
 	// Given: Some users are registered
-	db := config.ConnectMySQL()
+	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	users := []models.User{
 		{Name: "John Smith"},
@@ -30,16 +32,23 @@ func TestGetUser(t *testing.T) {
 		}
 		time.Sleep(time.Millisecond * 100)
 	}
-	bytes, err := json.Marshal(users[0])
+	renderedUser := renderings.User{
+		ID:        users[0].ID,
+		Name:      users[0].Name,
+		Email:     users[0].Email,
+		CreatedAt: users[0].CreatedAt,
+		UpdatedAt: users[0].UpdatedAt,
+	}
+	bytes, err := json.Marshal(renderedUser)
 	if err != nil {
 		panic(errors.New("failed to encode user to json"))
 	}
 
 	// When: GET /users/:id
-	ctx, _, rec := InitTestContext(http.MethodGet, "/users/:id", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodGet, "/users/:id", nil)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(users[0].ID)
-	ctx.Set(config.DbContextKey, tx)
+	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Get JSON array having some user objects
 	if assert.NoError(t, handlers.GetUserById(ctx)) {

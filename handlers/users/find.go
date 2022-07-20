@@ -3,6 +3,7 @@ package users
 import (
 	"net/http"
 
+	"github.com/reizt/ebra/conf"
 	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
 	"gorm.io/gorm"
@@ -11,7 +12,7 @@ import (
 )
 
 func GetUserById(c echo.Context) error {
-	db := c.Get("db").(*gorm.DB)
+	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	user := new(models.User)
 	id := c.Param("id")
 	if err := db.First(&user, "id = ?", id).Error; err != nil {
@@ -19,5 +20,11 @@ func GetUserById(c echo.Context) error {
 			Message: "user not found",
 		})
 	}
-	return c.JSON(http.StatusOK, user)
+	resp := &renderings.User{}
+	resp.ID = user.ID
+	resp.Name = user.Name
+	resp.Email = user.Email
+	resp.CreatedAt = user.CreatedAt
+	resp.UpdatedAt = user.UpdatedAt
+	return c.JSON(http.StatusOK, resp)
 }

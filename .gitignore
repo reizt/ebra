@@ -1,3 +1,7 @@
 /tmp/*
 !/tmp/.keep
 /.env*
+
+/designs
+/jwt.key
+/sessions.*.db

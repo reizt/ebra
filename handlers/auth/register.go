@@ -1,4 +1,4 @@
-package users
+package auth
 
 import (
 	"net/http"
@@ -13,28 +13,27 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func CreateUser(c echo.Context) error {
+func Register(c echo.Context) error {
 	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	params := &bindings.CreateUserRequest{}
-	resp := &renderings.User{}
+	resp := &renderings.UserResponse{}
 	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
 	}
-	user.Name = params.Name
 	// Validation for now
-	if user.Name == "" {
+	if params.Name == "" || params.Email == "" || params.Password == "" {
 		return c.JSON(http.StatusBadRequest, renderings.NotFoundResponse{
-			Message: "name can't be blank",
+			Message: "can't be blank",
 		})
 	}
-	if err := db.Select("ID", "Name").Create(&user).Error; err != nil {
+	user.Name = params.Name
+	user.Email = params.Email
+	if err := db.Create(&user).Error; err != nil {
 		return err
 	}
 	resp.ID = user.ID
 	resp.Name = user.Name
 	resp.Email = user.Email
-	resp.CreatedAt = user.CreatedAt
-	resp.UpdatedAt = user.UpdatedAt
 	return c.JSON(http.StatusCreated, resp)
 }

@@ -1,4 +1,4 @@
-package users_test
+package auth_test
 
 import (
 	"encoding/json"
@@ -7,27 +7,29 @@ import (
 	"testing"
 
 	"github.com/reizt/ebra/conf"
-	handlers "github.com/reizt/ebra/handlers/users"
+	handlers "github.com/reizt/ebra/handlers/auth"
 	"github.com/reizt/ebra/helpers"
 	"github.com/reizt/ebra/models"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateUserWhenNameGiven(t *testing.T) {
+func TestRegisterWhenParametersGiven(t *testing.T) {
 	// Given: no users are registered
 	db := conf.ConnectMySQL()
 	tx := db.Begin()
-	userJSON := `{"name": "John Smith"}`
+	userJSON := `{"name": "John Smith", "email": "john.smith@example.com", "password": "password"}`
 
 	// When: POST /users with body including property `name`
-	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
+	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/auth/register", strings.NewReader(userJSON))
 	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Successfully user is created
-	if assert.NoError(t, handlers.CreateUser(ctx)) {
+	if assert.NoError(t, handlers.Register(ctx)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
 		assert.Contains(t, rec.Body.String(), "John Smith")
+		assert.Contains(t, rec.Body.String(), "john.smith@example.com")
+		assert.NotContains(t, rec.Body.String(), "PasswordDigest")
 
 		createdUser := &models.User{}
 		json.Unmarshal(rec.Body.Bytes(), createdUser)
@@ -35,29 +37,29 @@ func TestCreateUserWhenNameGiven(t *testing.T) {
 	}
 	tx.Rollback()
 }
-func TestCreateUserWhenNameNotGiven(t *testing.T) {
+func TestRegisterWhenParametersNotGiven(t *testing.T) {
 	// When: POST /users without property `name`
 	userJSON := `{}`
 	db := conf.ConnectMySQL()
 	tx := db.Begin()
 
-	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/users", strings.NewReader(userJSON))
+	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/auth/register", strings.NewReader(userJSON))
 	ctx.Set(conf.DbContextKey, tx)
 
 	// Then: Can't create user
-	if assert.NoError(t, handlers.CreateUser(ctx)) {
+	if assert.NoError(t, handlers.Register(ctx)) {
 		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 	tx.Rollback()
 }
-func TestCreateUserWhenBodyIsBlank(t *testing.T) {
+func TestRegisterWhenBodyIsBlank(t *testing.T) {
 	db := conf.ConnectMySQL()
 	tx := db.Begin()
 	// When: POST /users without body
-	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/users", nil)
+	ctx, _, rec := helpers.InitTestContext(http.MethodPost, "/auth/register", nil)
 	ctx.Set(conf.DbContextKey, tx)
 	// Given: Can't create user
-	if assert.NoError(t, handlers.CreateUser(ctx)) {
+	if assert.NoError(t, handlers.Register(ctx)) {
 		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 	tx.Rollback()

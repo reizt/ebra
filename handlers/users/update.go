@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/reizt/ebra/bindings"
+	"github.com/reizt/ebra/conf"
 
 	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
@@ -13,7 +14,7 @@ import (
 )
 
 func UpdateUser(c echo.Context) error {
-	db := c.Get("db").(*gorm.DB)
+	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	user := &models.User{}
 	id := c.Param("id")
 	findRes := db.First(&user, "id = ?", id)
