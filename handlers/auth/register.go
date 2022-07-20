@@ -8,14 +8,9 @@ import (
 	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/renderings"
 
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
 	"github.com/labstack/echo/v4"
-)
-
-var (
-	bcryptCost = 12
 )
 
 func Register(c echo.Context) error {
@@ -34,11 +29,6 @@ func Register(c echo.Context) error {
 	}
 	user.Name = params.Name
 	user.Email = params.Email
-	digest, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcryptCost)
-	if err != nil {
-		return err
-	}
-	user.PasswordDigest = string(digest)
 	if err := db.Select("ID", "Name", "Email", "PasswordDigest").Create(&user).Error; err != nil {
 		return err
 	}
