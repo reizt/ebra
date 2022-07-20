@@ -8,8 +8,9 @@ import (
 
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
-	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/helpers"
+	"github.com/reizt/ebra/models"
+	"github.com/reizt/ebra/renderings"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -34,7 +35,17 @@ func TestGetUsersWhenUsersExist(t *testing.T) {
 	for i := 0; i < len(users)/2; i++ {
 		users[i], users[len(users)-i-1] = users[len(users)-i-1], users[i]
 	}
-	bytes, err := json.Marshal(users)
+	userRenderings := []renderings.User{}
+	for _, u := range users {
+		userRenderings = append(userRenderings, renderings.User{
+			ID:        u.ID,
+			Name:      u.Name,
+			Email:     u.Email,
+			CreatedAt: u.CreatedAt,
+			UpdatedAt: u.UpdatedAt,
+		})
+	}
+	bytes, err := json.Marshal(userRenderings)
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +56,7 @@ func TestGetUsersWhenUsersExist(t *testing.T) {
 
 	// Then: Get JSON array having some user objects
 	if assert.NoError(t, handlers.GetUsers(ctx)) {
-		assert.Equal(t, rec.Code, http.StatusOK)
+		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Equal(t, string(bytes)+"\n", rec.Body.String())
 	}
 	if err := db.Delete(&users).Error; err != nil {
@@ -64,7 +75,7 @@ func TestGetUsersWhenUsersDontExist(t *testing.T) {
 
 	// Then: Get JSON array having some user objects
 	if assert.NoError(t, handlers.GetUsers(ctx)) {
-		assert.Equal(t, rec.Code, http.StatusOK)
+		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Equal(t, "[]"+"\n", rec.Body.String())
 	}
 	tx.Rollback()
