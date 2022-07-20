@@ -8,8 +8,8 @@ import (
 
 	"github.com/reizt/ebra/conf"
 	handlers "github.com/reizt/ebra/handlers/users"
-	"github.com/reizt/ebra/models"
 	"github.com/reizt/ebra/helpers"
+	"github.com/reizt/ebra/models"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +26,7 @@ func TestCreateUserWhenNameGiven(t *testing.T) {
 
 	// Then: Successfully user is created
 	if assert.NoError(t, handlers.CreateUser(ctx)) {
-		assert.Equal(t, rec.Code, http.StatusCreated)
+		assert.Equal(t, http.StatusCreated, rec.Code)
 		assert.Contains(t, rec.Body.String(), "John Smith")
 
 		createdUser := &models.User{}
@@ -46,7 +46,7 @@ func TestCreateUserWhenNameNotGiven(t *testing.T) {
 
 	// Then: Can't create user
 	if assert.NoError(t, handlers.CreateUser(ctx)) {
-		assert.Equal(t, rec.Code, http.StatusBadRequest)
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 	tx.Rollback()
 }
@@ -58,7 +58,7 @@ func TestCreateUserWhenBodyIsBlank(t *testing.T) {
 	ctx.Set(conf.DbContextKey, tx)
 	// Given: Can't create user
 	if assert.NoError(t, handlers.CreateUser(ctx)) {
-		assert.Equal(t, rec.Code, http.StatusBadRequest)
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
 	}
 	tx.Rollback()
 }
