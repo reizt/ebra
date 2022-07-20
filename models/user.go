@@ -10,7 +10,7 @@ type User struct {
 	Base
 	Name           string `json:"name"`
 	Email          string `json:"email"`
-	Password       string `gorm:"-:migration"`
+	Password       string `gorm:"-:all"`
 	PasswordDigest string
 }
 
