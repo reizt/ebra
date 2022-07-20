@@ -16,6 +16,7 @@ import (
 func CreateUser(c echo.Context) error {
 	db := c.Get(conf.DbContextKey).(*gorm.DB)
 	params := &bindings.CreateUserRequest{}
+	resp := &renderings.User{}
 	user := &models.User{}
 	if err := (&echo.DefaultBinder{}).BindBody(c, &params); err != nil {
 		return err
@@ -30,5 +31,10 @@ func CreateUser(c echo.Context) error {
 	if err := db.Select("ID", "Name").Create(&user).Error; err != nil {
 		return err
 	}
-	return c.JSON(http.StatusCreated, user)
+	resp.ID = user.ID
+	resp.Name = user.Name
+	resp.Email = user.Email
+	resp.CreatedAt = user.CreatedAt
+	resp.UpdatedAt = user.UpdatedAt
+	return c.JSON(http.StatusCreated, resp)
 }

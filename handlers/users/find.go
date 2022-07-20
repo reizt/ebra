@@ -20,5 +20,11 @@ func GetUserById(c echo.Context) error {
 			Message: "user not found",
 		})
 	}
-	return c.JSON(http.StatusOK, user)
+	resp := &renderings.User{}
+	resp.ID = user.ID
+	resp.Name = user.Name
+	resp.Email = user.Email
+	resp.CreatedAt = user.CreatedAt
+	resp.UpdatedAt = user.UpdatedAt
+	return c.JSON(http.StatusOK, resp)
 }
